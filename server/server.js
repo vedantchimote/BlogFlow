@@ -211,8 +211,7 @@ app.delete("/category/delete/:id", (req, res) => {
 
 //api for category description by category id
 app.get("/category/description/:id", (req, res) => {
-  const query =
-    "select id, title, description from categories where id = ?";
+  const query = "select id, title, description from categories where id = ?";
   db.pool.execute(query, [req.params.id], (err, categories) => {
     if (err) {
       res.send(utils.createErrorResult(err));
@@ -241,7 +240,6 @@ app.post("/blog/add", (req, res) => {
     }
   );
 });
-
 
 // api to get a blog by id
 app.get("/blog/:id", (req, res) => {
@@ -330,6 +328,51 @@ app.get("/blogs/details", (req, res) => {
 app.get("/blog/details/:id", (req, res) => {
   const query =
     "select b.id, b.title, b.contents, b.created_time, u.full_name, u.email, c.title as category_title, c.description as category_description from blogs b inner join user u on b.user_id = u.id inner join categories c on b.category_id = c.id where b.id = ?";
+  db.pool.execute(query, [req.params.id], (err, blogs) => {
+    if (err) {
+      res.send(utils.createErrorResult(err));
+    } else if (blogs.length === 0) {
+      res.send(utils.createErrorResult("blog does not exist"));
+    } else {
+      res.send(utils.createSuccessResult(blogs[0]));
+    }
+  });
+});
+
+//search blog by title
+app.get("/blog/search/:title", (req, res) => {
+  const query =
+    "select id, title, contents, user_id, category_id from blogs where title = ?";
+  db.pool.execute(query, [req.params.title], (err, blogs) => {
+    if (err) {
+      res.send(utils.createErrorResult(err));
+    } else if (blogs.length === 0) {
+      res.send(utils.createErrorResult("blog does not exist"));
+    } else {
+      res.send(utils.createSuccessResult(blogs[0]));
+    }
+  });
+});
+
+//search blog by blog id
+app.get("/blog/search/:id", (req, res) => {
+  const query =
+    "select id, title, contents, user_id, category_id from blogs where id = ?";
+  db.pool.execute(query, [req.params.id], (err, blogs) => {
+    if (err) {
+      res.send(utils.createErrorResult(err));
+    } else if (blogs.length === 0) {
+      res.send(utils.createErrorResult("blog does not exist"));
+    } else {
+      res.send(utils.createSuccessResult(blogs[0]));
+    }
+  });
+});
+
+//search blog by user id
+app.get("/blog/user/:id", (req, res) => {
+  const query =
+    "select id, title, contents, user_id, category_id from blogs where user_id = ?";
   db.pool.execute(query, [req.params.id], (err, blogs) => {
     if (err) {
       res.send(utils.createErrorResult(err));
