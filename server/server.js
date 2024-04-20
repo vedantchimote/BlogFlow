@@ -339,20 +339,6 @@ app.get("/blog/details/:id", (req, res) => {
   });
 });
 
-//search blog by title
-app.get("/blog/search/:title", (req, res) => {
-  const query =
-    "select id, title, contents, user_id, category_id from blogs where title = ?";
-  db.pool.execute(query, [req.params.title], (err, blogs) => {
-    if (err) {
-      res.send(utils.createErrorResult(err));
-    } else if (blogs.length === 0) {
-      res.send(utils.createErrorResult("blog does not exist"));
-    } else {
-      res.send(utils.createSuccessResult(blogs[0]));
-    }
-  });
-});
 
 //search blog by blog id
 app.get("/blog/search/:id", (req, res) => {
@@ -369,20 +355,6 @@ app.get("/blog/search/:id", (req, res) => {
   });
 });
 
-// //search blog by user id, add the time of creation
-// app.get("/blog/user/:id", (req, res) => {
-//   const query =
-//     "select id, title, contents, user_id, category_id from blogs where user_id = ?";
-//   db.pool.execute(query, [req.params.id], (err, blogs) => {
-//     if (err) {
-//       res.send(utils.createErrorResult(err));
-//     } else if (blogs.length === 0) {
-//       res.send(utils.createErrorResult("blog does not exist"));
-//     } else {
-//       res.send(utils.createSuccessResult(blogs));
-//     }
-//   });
-// });
 
 // search blog by user id, add the time of creation and user full_name
 app.get("/blog/user/:id", (req, res) => {
@@ -399,6 +371,21 @@ app.get("/blog/user/:id", (req, res) => {
   });
 });
 
+// search blog by title using regex
+app.get("/blog/search/:title", (req, res) => {
+  const query =
+    "select id, title, contents, user_id, category_id from blogs where title like ?";
+  const searchTerm = `%${req.params.title}%`;
+  db.pool.execute(query, [searchTerm], (err, blogs) => {
+    if (err) {
+      res.send(utils.createErrorResult(err));
+    } else if (blogs.length === 0) {
+      res.send(utils.createSuccessResult([]));
+    } else {
+      res.send(utils.createSuccessResult(blogs));
+    }
+  });
+});
 
 app.listen(4000, "0.0.0.0", () => {
   console.log("server started on port 4000");
