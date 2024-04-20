@@ -147,9 +147,9 @@ app.delete("/user/delete/:id", (req, res) => {
 
 // api to add a category
 app.post("/category/add", (req, res) => {
-  const { id, title, description } = req.body;
-  const query = "insert into categories (id, title, description) values(?,?,?)";
-  db.pool.execute(query, [id, title, description], (err, result) => {
+  const { title, description } = req.body;
+  const query = "insert into categories (title, description) values(?,?)";
+  db.pool.execute(query, [title, description], (err, result) => {
     if (err) {
       res.send(utils.createErrorResult(err));
     } else {
@@ -209,14 +209,29 @@ app.delete("/category/delete/:id", (req, res) => {
   });
 });
 
+//api for category description by category id
+app.get("/category/description/:id", (req, res) => {
+  const query =
+    "select id, title, description from categories where id = ?";
+  db.pool.execute(query, [req.params.id], (err, categories) => {
+    if (err) {
+      res.send(utils.createErrorResult(err));
+    } else if (categories.length === 0) {
+      res.send(utils.createErrorResult("category does not exist"));
+    } else {
+      res.send(utils.createSuccessResult(categories[0]));
+    }
+  });
+});
+
 // api to add a blog
 app.post("/blog/add", (req, res) => {
-  const { id, title, contents, user_id, category_id } = req.body;
+  const { title, contents, user_id, category_id } = req.body;
   const query =
-    "insert into blogs (id, title, contents, user_id, category_id) values(?,?,?,?,?)";
+    "insert into blogs (title, contents, user_id, category_id) values(?,?,?,?)";
   db.pool.execute(
     query,
-    [id, title, contents, user_id, category_id],
+    [title, contents, user_id, category_id],
     (err, result) => {
       if (err) {
         res.send(utils.createErrorResult(err));
@@ -226,6 +241,7 @@ app.post("/blog/add", (req, res) => {
     }
   );
 });
+
 
 // api to get a blog by id
 app.get("/blog/:id", (req, res) => {
