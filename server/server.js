@@ -369,20 +369,36 @@ app.get("/blog/search/:id", (req, res) => {
   });
 });
 
-//search blog by user id
+// //search blog by user id, add the time of creation
+// app.get("/blog/user/:id", (req, res) => {
+//   const query =
+//     "select id, title, contents, user_id, category_id from blogs where user_id = ?";
+//   db.pool.execute(query, [req.params.id], (err, blogs) => {
+//     if (err) {
+//       res.send(utils.createErrorResult(err));
+//     } else if (blogs.length === 0) {
+//       res.send(utils.createErrorResult("blog does not exist"));
+//     } else {
+//       res.send(utils.createSuccessResult(blogs));
+//     }
+//   });
+// });
+
+// search blog by user id, add the time of creation and user full_name
 app.get("/blog/user/:id", (req, res) => {
   const query =
-    "select id, title, contents, user_id, category_id from blogs where user_id = ?";
+    "select b.id, b.title, b.contents, b.created_time, u.full_name, u.email, c.title as category_title, c.description as category_description from blogs b inner join user u on b.user_id = u.id inner join categories c on b.category_id = c.id where b.user_id = ?";
   db.pool.execute(query, [req.params.id], (err, blogs) => {
     if (err) {
       res.send(utils.createErrorResult(err));
     } else if (blogs.length === 0) {
       res.send(utils.createErrorResult("blog does not exist"));
     } else {
-      res.send(utils.createSuccessResult(blogs[0]));
+      res.send(utils.createSuccessResult(blogs));
     }
   });
 });
+
 
 app.listen(4000, "0.0.0.0", () => {
   console.log("server started on port 4000");
