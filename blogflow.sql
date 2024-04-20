@@ -9,16 +9,16 @@ CREATE TABLE user (
 
 
 CREATE TABLE categories (
-  id INT NOT NULL PRIMARY KEY,
+  id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
   title VARCHAR(50),
-  description VARCHAR(1000)
+  description VARCHAR(3000)
 );
 
 
 CREATE TABLE blogs (
-  id INT NOT NULL PRIMARY KEY,
+  id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
   title VARCHAR(50),
-  contents VARCHAR(1000),
+  contents VARCHAR(3000),
   created_time DATETIME DEFAULT CURRENT_TIMESTAMP,
   user_id INT,
   category_id INT,
@@ -33,13 +33,13 @@ INSERT INTO user (full_name, email, password, phone_no) VALUES
   ('Jane Smith', 'jane.smith@example.com', 'password456', '9876543210');
 
 
-INSERT INTO categories (id, title, description) VALUES
-  (1, 'Technology', 'Articles related to the latest technology trends'),
-  (2, 'Travel', 'Blogs about travel destinations and experiences');
+INSERT INTO categories (title, description) VALUES
+  ('Technology', 'Articles related to the latest technology trends'),
+  ('Travel', 'Blogs about travel destinations and experiences');
 
 
-INSERT INTO blogs (id, title, contents, user_id, category_id) VALUES
-  (1, 'Introduction to SQL', 'SQL is a programming language...', 1, 1),
-  (2, 'Tips for Traveling on a Budget', 'Traveling can be expensive...', 2, 2);
+INSERT INTO blogs (title, contents, user_id, category_id) VALUES
+  ('Introduction to SQL', 'SQL is a programming language...', 1, 1),
+  ('Tips for Traveling on a Budget', 'Traveling can be expensive...', 2, 2);
   
 ---------------------------------------------------------------------------
